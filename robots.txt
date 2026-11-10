@@ -1,0 +1,5 @@
+# AI crawlers and search engines are welcome.
+User-agent: *
+Allow: /
+
+Sitemap: https://andrewfindlater.com/sitemap.xml
