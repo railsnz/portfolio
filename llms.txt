@@ -19,4 +19,4 @@ He grew up in the Eastern Bay of Plenty. Other homes over the years have been Ro
 
 - [Auctions](https://andrewfindlater.com/auctions): Andrew was responsible for all UX/UI work redesigning the three products that managed Barfoot & Thompson auction sessions and lots: Auction Presentation, Auction Calculator and Auction Manager. The work was done in 2019.
 
-- [More projects](https://andrewfindlater.com/recent-projects): Shorter write-ups of other work, including Barfoot & Thompson iOS and Android apps, a company rebrand, Material Design web apps, and a personal digital rendering of an Avanti racing bike concept.
+- [More projects](https://andrewfindlater.com/recent-projects): A selection of other projects, including Barfoot & Thompson iOS and Android apps, a company rebrand, Material Design web apps, and a personal digital rendering of an Avanti racing bike concept.
