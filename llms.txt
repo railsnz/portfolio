@@ -1,0 +1,22 @@
+# Andrew Findlater
+
+Andrew Findlater is a UX designer living and working in Tauranga, New Zealand. This is his personal portfolio.
+
+- About and contact: https://andrewfindlater.com/contact-andrew-findlater
+- Email: andrewfindlater1@gmail.com
+- Phone: +64 22 1516 722
+- LinkedIn: https://www.linkedin.com/in/andrewfindlater1
+- Twitter/X: https://twitter.com/RailsNZ
+- CV (PDF): https://andrewfindlater.com/documents/Andrew-Findlater-CV-1.pdf
+
+He grew up in the Eastern Bay of Plenty. Other homes over the years have been Rotorua, Wellington, Sydney and London. He holds a BDes.
+
+## Case studies
+
+- [barfoot.co.nz](https://andrewfindlater.com/barfoot-co-nz): Andrew led the redesign of barfoot.co.nz, the website of Barfoot & Thompson, which showcases the 10,000+ properties the company sells annually and its 1600+ agents. The redesign significantly increased user engagement and leads to salespeople.
+
+- [Saleskit 2.0](https://andrewfindlater.com/saleskit): Andrew led the redesign of Saleskit, a browser app that enables users to prepare detailed proposals when pitching to sell a property. He later became product owner of Saleskit.
+
+- [Auctions](https://andrewfindlater.com/auctions): Andrew was responsible for all UX/UI work redesigning the three products that managed Barfoot & Thompson auction sessions and lots: Auction Presentation, Auction Calculator and Auction Manager. The work was done in 2019.
+
+- [More projects](https://andrewfindlater.com/recent-projects): A selection of other projects, including Barfoot & Thompson iOS and Android apps, a company rebrand, Material Design web apps, and a personal digital rendering of an Avanti racing bike concept.

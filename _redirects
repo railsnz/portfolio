@@ -1,0 +1,4 @@
+# Preserve the typo URL that has been live since the 2023 export
+/contact-andrew-findllater        /contact-andrew-findlater        301
+/contact-andrew-findllater/       /contact-andrew-findlater        301
+/contact-andrew-findllater.html   /contact-andrew-findlater        301
