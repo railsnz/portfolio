@@ -653,6 +653,7 @@
   var scrollToken = 0;
   var pinUntil = 0;
   var spyLockId = null;
+  var lockLastDist = null;
   var updateScrollSpy = function () {};
 
   function pinAlignment() {
@@ -670,6 +671,7 @@
     applyScrollPadding();
     pinAlignment();
     spyLockId = target.id;
+    lockLastDist = null;
     var instantMove = instant || prefersReducedMotion();
     if (instantMove) {
       jumpToTarget(target);
@@ -686,7 +688,7 @@
     function correct() {
       if (finished || token !== scrollToken) return;
       finished = true;
-      jumpToTarget(target);
+      if (spyLockId === target.id) jumpToTarget(target);
       spyLockId = null;
       updateScrollSpy();
     }
@@ -761,19 +763,42 @@
 
     function setCurrent(id) {
       items.forEach(function (item) {
-        var on = item.section.id === id;
+        var on = !!id && item.section.id === id;
         item.link.classList.toggle('w--current', on);
         if (on) item.link.setAttribute('aria-current', 'location');
         else item.link.removeAttribute('aria-current');
       });
     }
 
+    function clearSpyLock() {
+      spyLockId = null;
+      lockLastDist = null;
+    }
+
     function update() {
-      if (spyLockId) {
-        setCurrent(spyLockId);
-        return;
-      }
       var probe = headerOffset() + 8;
+      if (spyLockId) {
+        var locked = document.getElementById(spyLockId);
+        if (locked) {
+          var dist = locked.getBoundingClientRect().top - probe;
+          if (dist <= 0) {
+            // The clicked section is now at or above the spy probe.
+            clearSpyLock();
+          } else if (lockLastDist != null && dist > lockLastDist + 8) {
+            // User scrolled away from the click target; do not keep
+            // the old link current and do not jump back later.
+            clearSpyLock();
+            pinUntil = 0;
+            scrollToken += 1;
+          } else {
+            lockLastDist = dist;
+            setCurrent(spyLockId);
+            return;
+          }
+        } else {
+          clearSpyLock();
+        }
+      }
       var currentId = null;
       items.forEach(function (item) {
         if (item.section.getBoundingClientRect().top <= probe) {
@@ -807,6 +832,25 @@
       });
     }
 
+    function onUserScrollIntent(event) {
+      if (event && event.target && event.target.closest &&
+          event.target.closest('.sticky-menu a.nav-anchor')) {
+        return;
+      }
+      if (!spyLockId && Date.now() > pinUntil) return;
+      clearSpyLock();
+      pinUntil = 0;
+      scrollToken += 1;
+      update();
+    }
+    window.addEventListener('wheel', onUserScrollIntent, { passive: true });
+    window.addEventListener('touchmove', onUserScrollIntent, { passive: true });
+    window.addEventListener('keydown', function (event) {
+      if (/^(Arrow(Up|Down)|Page(Up|Down)|Home|End| )$/.test(event.key)) {
+        onUserScrollIntent(event);
+      }
+    });
+
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
     links.forEach(function (link) {
@@ -814,6 +858,8 @@
         var href = link.getAttribute('href');
         var target = targetFromHash(href);
         if (target) setCurrent(target.id);
+        // Drop sticky hover/focus underlines on touch after a tap.
+        link.blur();
       });
     });
     update();

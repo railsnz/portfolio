@@ -323,8 +323,23 @@ li {
   text-decoration: none;
 }
 
-.nav-anchor:hover, .nav-anchor.w--current, .nav-anchor.w--current:hover {
+.nav-anchor.w--current {
   text-decoration: underline;
+}
+
+@media (hover: hover) {
+  .nav-anchor:hover {
+    text-decoration: underline;
+  }
+}
+
+.nav-anchor:focus {
+  outline: none;
+}
+
+.nav-anchor:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
 }
 
 .tool-name {
