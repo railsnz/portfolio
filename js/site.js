@@ -616,6 +616,129 @@
     closeBtn.focus();
   }
 
+
+  function headerOffset() {
+    var sticky = document.querySelector('.sticky-menu');
+    if (!sticky) return 0;
+    return Math.ceil(sticky.getBoundingClientRect().height);
+  }
+
+  function applyScrollPadding() {
+    var offset = headerOffset();
+    document.documentElement.style.scrollPaddingTop = offset ? offset + 'px' : '';
+  }
+
+  function targetFromHash(hash) {
+    if (!hash || hash === '#') return null;
+    var id;
+    try {
+      id = decodeURIComponent(hash.replace(/^#/, ''));
+    } catch (err) {
+      id = hash.replace(/^#/, '');
+    }
+    return document.getElementById(id);
+  }
+
+  function jumpToTarget(target) {
+    if (!target) return;
+    applyScrollPadding();
+    var html = document.documentElement;
+    var prev = html.style.scrollBehavior;
+    html.style.scrollBehavior = 'auto';
+    var top = target.getBoundingClientRect().top + window.pageYOffset - headerOffset();
+    window.scrollTo(0, Math.max(0, top));
+    html.style.scrollBehavior = prev;
+  }
+
+  var scrollToken = 0;
+  var pinUntil = 0;
+
+  function pinAlignment() {
+    pinUntil = Date.now() + 2500;
+  }
+
+  function realignHashIfPinned() {
+    if (Date.now() > pinUntil) return;
+    jumpToTarget(targetFromHash(window.location.hash));
+  }
+
+  function scrollToHash(hash, instant) {
+    var target = targetFromHash(hash);
+    if (!target) return false;
+    applyScrollPadding();
+    pinAlignment();
+    var instantMove = instant || prefersReducedMotion();
+    if (instantMove) {
+      jumpToTarget(target);
+      return true;
+    }
+
+    var token = ++scrollToken;
+    var top = Math.max(0, target.getBoundingClientRect().top + window.pageYOffset - headerOffset());
+    window.scrollTo({ top: top, behavior: 'smooth' });
+
+    var finished = false;
+    function correct() {
+      if (finished || token !== scrollToken) return;
+      finished = true;
+      jumpToTarget(target);
+    }
+    window.addEventListener('scrollend', correct, { once: true });
+    var last = window.scrollY;
+    var still = 0;
+    var started = Date.now();
+    var iv = window.setInterval(function () {
+      if (token !== scrollToken) {
+        window.clearInterval(iv);
+        return;
+      }
+      if (window.scrollY === last) still += 1;
+      else still = 0;
+      last = window.scrollY;
+      if (still >= 8 || Date.now() - started > 10000) {
+        window.clearInterval(iv);
+        correct();
+      }
+    }, 50);
+    return true;
+  }
+
+  function initSmoothScroll() {
+    applyScrollPadding();
+    window.addEventListener('resize', applyScrollPadding);
+
+    document.addEventListener('click', function (event) {
+      var link = event.target.closest('a[href]');
+      if (!link) return;
+      var href = link.getAttribute('href');
+      if (!href || href.charAt(0) !== '#' || href === '#') return;
+      if (link.classList.contains('w-lightbox')) return;
+      if (!targetFromHash(href)) return;
+      event.preventDefault();
+      if (window.history && window.history.pushState) {
+        window.history.pushState(null, '', href);
+      } else {
+        window.location.hash = href;
+      }
+      scrollToHash(href, false);
+    });
+
+    window.addEventListener('popstate', function () {
+      if (window.location.hash) scrollToHash(window.location.hash, prefersReducedMotion());
+    });
+
+    document.addEventListener('load', function (event) {
+      var el = event.target;
+      if (!el || !el.tagName || el.tagName !== 'IMG') return;
+      if (Date.now() > pinUntil) return;
+      window.setTimeout(realignHashIfPinned, 50);
+    }, true);
+
+    if (window.location.hash) {
+      scrollToHash(window.location.hash, true);
+    }
+  }
+
   ready(function () {
     setCopyrightYear();
     initStickyMenu();
@@ -624,5 +747,6 @@
     initScrollFades();
     initSliders();
     initLightboxes();
+    initSmoothScroll();
   });
 })();
